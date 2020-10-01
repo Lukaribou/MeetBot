@@ -19,12 +19,14 @@ class MeetBot(discord.Client):
     async def on_message(self, message: discord.Message):
         if (not message.content.startswith(self.prefix)) or message.author.bot:
             return
+        message.content = message.content[2:]
         self.cmds.get_command("test").run(Context(self, message))
 
 
-bot = MeetBot()
+if __name__ == '__main__':
+    bot = MeetBot()
 
+    def test(ctx: Context):
+        ctx.channel.send("coucou")
 
-@bot.cmds.add_command(name='test')
-def test(ctx: Context):
-    ctx.channel.send("coucou")
+    bot.cmds.add_command(test, 'test')

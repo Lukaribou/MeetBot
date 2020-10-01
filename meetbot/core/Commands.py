@@ -33,7 +33,8 @@ class CommandsManager:
     def get_command(self, cmd_name):
         """Return the command if it is defined, else None"""
         for x in self.commands.values():
-            if (cmd_name == x) or (x.aliases is not None and cmd_name in x.aliases):
+            print(x)
+            if cmd_name == x.name or ((x.aliases is not None) and cmd_name in x.aliases):
                 return x
         return None
 
@@ -41,8 +42,9 @@ class CommandsManager:
         """Return true if the command exists (check aliases too)"""
         return self.get_command(cmd_name)
 
-    def add_command(self, fonction, name='', aliases=None, owner_only=False):
+    def add_command(self, fonction, name, aliases=None, owner_only=False):
         """Add the command to self.commands"""
         if self.has_command(name):
             raise Exception(f"Command {name} already defined (or an alias is already attribued)")
+        print("coucou")
         self.commands[name] = Command(name, fonction, aliases, owner_only)
