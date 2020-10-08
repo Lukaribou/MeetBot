@@ -19,11 +19,11 @@ class Command:
         self.aliases = [] if aliases is None else aliases
         self.owner_only = owner_only
 
-    def run(self, ctx: Context):
+    async def run(self, ctx: Context):
         if self.owner_only and ctx.author.id != OWNER_ID:
-            ctx.channel.send(EMOJIS["x"] + " **This command is reserved for the bot owner**")
+            await ctx.channel.send(EMOJIS["x"] + " **This command is reserved for the bot owner**")
         else:
-            self.function()
+            await self.function(ctx)
 
 
 class CommandsManager:
