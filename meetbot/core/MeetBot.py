@@ -1,5 +1,4 @@
 import discord
-import threading
 
 import meetbot.config as config
 from meetbot.core.Commands import *
@@ -18,6 +17,7 @@ class MeetBot(discord.Client):
             self.run(config.TOKEN)
 
     def toggle_maintenance(self):
+        """Toggle the maintenance mode"""
         self._maintenance = not self._maintenance
         print("TOGGLE MAINTENANCE MODE TO : " + str(self._maintenance))
 

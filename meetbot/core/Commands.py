@@ -27,6 +27,7 @@ class Command:
         self.cooldown = cooldown
 
     async def run(self, ctx: Context):
+        """Execute the command (override this method)"""
         if ctx.bot.debug_mode:
             print(f'Commande {self.name} exécutée !')
         if self.owner_only and ctx.author.id != OWNER_ID:
@@ -62,11 +63,13 @@ class CommandsManager:
         self.commands[cmd.name] = cmd
 
     def add_commands(self, cmds: List[Command]):
+        """Add all the commands to self.commands, using self.add_command() for each"""
         print(f'Chargement de {len(cmds)} commandes:')
         for command in cmds:
             self.add_command(command)
 
     def load_commands_from_dir(self, do_not_load: List[str] = None):
+        """Load all the commands from ./commands/ (assuming the file is containing a FileCommand class)"""
         do_not_load = [] if do_not_load is None else do_not_load
         cmds = []
         for file in os.listdir('./commands/'):
@@ -79,9 +82,11 @@ class CommandsManager:
         self.add_commands(cmds)
 
     def is_in_cooldown(self, author: discord.User, cmd: str):
+        """Return true if the user is in the cooldown for this cooldown"""
         return (author.id in self._cooldown.keys()) and (cmd in self._cooldown.get(author.id))
 
     def add_in_cooldown(self, author: discord.User, cmd: Command):
+        """Add the command to the user cooldown"""
         if author.id in self._cooldown.keys():
             self._cooldown[author.id].append(cmd.name)
         else:
@@ -89,6 +94,7 @@ class CommandsManager:
         threading.Timer(cmd.cooldown, self.delete_from_cooldown, [author, cmd.name]).start()
 
     def delete_from_cooldown(self, author: discord.User, cmd: str):
+        """Delete the command from the user's cooldown"""
         if author.id in self._cooldown.keys():
             if len(self._cooldown.get(author.id)) == 1:
                 self._cooldown.pop(author.id)
