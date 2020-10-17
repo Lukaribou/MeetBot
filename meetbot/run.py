@@ -1,9 +1,3 @@
-import os
-import importlib.util
-
-from typing import List
-
-from meetbot.core.Commands import Command
 from meetbot.core.MeetBot import MeetBot
 from meetbot.config import TOKEN
 
