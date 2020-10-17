@@ -21,4 +21,8 @@ class MeetBot(discord.Client):
         if (not message.content.startswith(self.prefix)) or message.author.bot:
             return
         message.content = message.content[len(self.prefix):]
-        await self.cmds.get_command(message.content.split(" ")[0]).run(Context(self, message))
+        cmd = self.cmds.get_command(message.content.split(" ")[0])
+
+        if not self.cmds.is_in_cooldown(message.author, cmd.name):
+            self.cmds.add_in_cooldown(message.author, cmd)
+            await cmd.run(Context(self, message))

@@ -1,5 +1,6 @@
 import os
 import importlib.util
+import threading
 from typing import Dict, Union, List
 
 import discord
@@ -17,10 +18,13 @@ class Context:
 
 
 class Command:
-    def __init__(self, name: str, aliases: List[str] = None, owner_only=False):
+    def __init__(self, name: str, aliases: List[str] = None, owner_only=False, cooldown=1):
+        """Create a new command\n
+        cooldown is in ms"""
         self.name = name
         self.aliases = [] if aliases is None else aliases
         self.owner_only = owner_only
+        self.cooldown = cooldown
 
     async def run(self, ctx: Context):
         if ctx.bot.debug_mode:
@@ -36,11 +40,11 @@ class CommandsManager:
     def __init__(self, bot):
         self.commands: Dict[str, Command] = {}
         self._bot = bot
+        self._cooldown: Dict[str, List[str]] = {}
 
     def get_command(self, cmd_name):
         """Return the command if it is defined, else None"""
         for x in self.commands.values():
-            print(x)
             if cmd_name == x.name or ((x.aliases is not None) and cmd_name in x.aliases):
                 return x
         return None
@@ -52,13 +56,13 @@ class CommandsManager:
     def add_command(self, cmd: Command):
         """Add the command to self.commands"""
         if self._bot.debug_mode:
-            print(f'\tCommande {cmd.name} chargée !')
+            print(f'\tCommande "{cmd.name}" chargée !')
         if self.has_command(cmd.name):
             raise Exception(f"Command {cmd.name} already defined (or an alias is already attribued)")
         self.commands[cmd.name] = cmd
 
     def add_commands(self, cmds: List[Command]):
-        print(f'Chargement de {len(cmds)} commandes.')
+        print(f'Chargement de {len(cmds)} commandes:')
         for command in cmds:
             self.add_command(command)
 
@@ -73,3 +77,20 @@ class CommandsManager:
                 spec.loader.exec_module(mod)
                 cmds.append(mod.FileCommand())
         self.add_commands(cmds)
+
+    def is_in_cooldown(self, author: discord.User, cmd: str):
+        return (author.id in self._cooldown.keys()) and (cmd in self._cooldown.get(author.id))
+
+    def add_in_cooldown(self, author: discord.User, cmd: Command):
+        if author.id in self._cooldown.keys():
+            self._cooldown[author.id].append(cmd.name)
+        else:
+            self._cooldown[author.id] = [cmd.name]
+        threading.Timer(cmd.cooldown, self.delete_from_cooldown, [author, cmd.name]).start()
+
+    def delete_from_cooldown(self, author: discord.User, cmd: str):
+        if author.id in self._cooldown.keys():
+            if len(self._cooldown.get(author.id)) == 1:
+                self._cooldown.pop(author.id)
+            else:
+                self._cooldown.get(author.id).remove(cmd)
