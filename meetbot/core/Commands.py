@@ -1,6 +1,10 @@
+import os
+import importlib.util
 from typing import Dict, Union, List
-from meetbot.config import OWNER_ID, EMOJIS
+
 import discord
+
+from meetbot.config import OWNER_ID, EMOJIS
 
 
 class Context:
@@ -13,7 +17,7 @@ class Context:
 
 
 class Command:
-    def __init__(self, name: str, aliases=None, owner_only=False):
+    def __init__(self, name: str, aliases: List[str] = None, owner_only=False):
         self.name = name
         self.aliases = [] if aliases is None else aliases
         self.owner_only = owner_only
@@ -58,3 +62,14 @@ class CommandsManager:
         for command in cmds:
             self.add_command(command)
 
+    def load_commands_from_dir(self, do_not_load: List[str] = None):
+        do_not_load = [] if do_not_load is None else do_not_load
+        cmds = []
+        for file in os.listdir('./commands/'):
+            if file not in do_not_load:
+                # https://stackoverflow.com/questions/67631/how-to-import-a-module-given-the-full-path
+                spec = importlib.util.spec_from_file_location(f'meetbot.commands.{file}', f'./commands/{file}')
+                mod = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(mod)
+                cmds.append(mod.FileCommand())
+        self.add_commands(cmds)
