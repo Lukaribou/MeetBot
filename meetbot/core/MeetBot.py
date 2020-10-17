@@ -4,11 +4,12 @@ import discord
 
 
 class MeetBot(discord.Client):
-    def __init__(self, run_now=False, **options):
+    def __init__(self, run_now=False, debug_mode=True, **options):
         super().__init__(**options)
         self.prefix = config.PREFIX
         self.owner_id = config.OWNER_ID
-        self.cmds = CommandsManager()
+        self.debug_mode = debug_mode
+        self.cmds = CommandsManager(self)
 
         if run_now:
             self.run(config.TOKEN)

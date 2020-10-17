@@ -22,7 +22,7 @@ def load_commands() -> List[Command]:
 
 
 if __name__ == '__main__':
-    bot = MeetBot()
+    bot = MeetBot(debug_mode=True)
 
     bot.cmds.add_commands(load_commands())
 

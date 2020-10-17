@@ -19,15 +19,19 @@ class Command:
         self.owner_only = owner_only
 
     async def run(self, ctx: Context):
+        if ctx.bot.debug_mode:
+            print(f'Commande {self.name} exécutée !')
         if self.owner_only and ctx.author.id != OWNER_ID:
             await ctx.channel.send(EMOJIS["x"] + " **This command is reserved for the bot owner**")
+            return
         else:
             print(EMOJIS["ok"] + f" Commande {self.name} !")
 
 
 class CommandsManager:
-    def __init__(self):
+    def __init__(self, bot):
         self.commands: Dict[str, Command] = {}
+        self._bot = bot
 
     def get_command(self, cmd_name):
         """Return the command if it is defined, else None"""
@@ -43,11 +47,14 @@ class CommandsManager:
 
     def add_command(self, cmd: Command):
         """Add the command to self.commands"""
+        if self._bot.debug_mode:
+            print(f'\tCommande {cmd.name} chargée !')
         if self.has_command(cmd.name):
             raise Exception(f"Command {cmd.name} already defined (or an alias is already attribued)")
         self.commands[cmd.name] = cmd
 
     def add_commands(self, cmds: List[Command]):
+        print(f'Chargement de {len(cmds)} commandes.')
         for command in cmds:
             self.add_command(command)
 
