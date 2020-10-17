@@ -30,7 +30,7 @@ class Command:
         if ctx.bot.debug_mode:
             print(f'Commande {self.name} exécutée !')
         if self.owner_only and ctx.author.id != OWNER_ID:
-            await ctx.channel.send(EMOJIS["x"] + " **This command is reserved for the bot owner**")
+            await ctx.channel.send(EMOJIS["x"] + " **This command is reserved to the bot owner**")
             return
         else:
             print(EMOJIS["ok"] + f" Commande {self.name} !")

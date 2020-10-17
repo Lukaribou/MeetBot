@@ -28,7 +28,7 @@ class MeetBot(discord.Client):
         cmd = self.cmds.get_command(message.content.split(" ")[0])
 
         if self.cmds.is_in_cooldown(message.author, cmd.name):
-            m = await message.channel.send(f'{EMOJIS["x"]} **Cette commande a un cooldown de {cmd.cooldown}s !**')
+            m = await message.channel.send(f'{EMOJIS["x"]} **This command has a cooldown of {cmd.cooldown}s !**')
             await m.delete(5)
         else:
             self.cmds.add_in_cooldown(message.author, cmd)

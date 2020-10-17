@@ -14,6 +14,6 @@ class FileCommand(Command):
         t1 = time.time()
         m = await ctx.channel.send(embed=discord.embeds.Embed(color=0xFF0000))
         em.add_field(
-            name='Latence API:',
+            name='API latency:',
             value=str((time.time() - t1) * 1000).split('.')[0] + 'ms')
         await m.edit(embed=em)
