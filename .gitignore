@@ -3,3 +3,4 @@
 meetbot/config.py
 meetbot/__pycache__/
 meetbot/core/__pycache__/
+*.pyc

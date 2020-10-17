@@ -1,34 +1,29 @@
-import meetbot.config as config
-from meetbot.core.Commands import *
+import os
+import importlib.util
+
+from typing import List
+
+from meetbot.core.Commands import Command
+from meetbot.core.MeetBot import MeetBot
+from meetbot.config import TOKEN
 
 
-class MeetBot(discord.Client):
-    def __init__(self, run_now=False, **options):
-        super().__init__(**options)
-        self.prefix = config.PREFIX
-        self.owner_id = config.OWNER_ID
-        self.cmds = CommandsManager()
+def load_commands() -> List[Command]:
+    cmds = []
+    for file in os.listdir('./commands/'):
+        if not file == '__pycache__':
+            # https://stackoverflow.com/questions/67631/how-to-import-a-module-given-the-full-path
+            spec = importlib.util.spec_from_file_location(f'meetbot.commands.{file}', f'./commands/{file}')
+            mod = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(mod)
+            cmds.append(mod.FileCommand())
 
-        if run_now:
-            self.run(config.TOKEN)
-
-    async def on_ready(self):
-        print(f'Logged as {self.user}')
-
-    async def on_message(self, message: discord.Message):
-        if (not message.content.startswith(self.prefix)) or message.author.bot:
-            return
-        message.content = message.content[2:]
-        await self.cmds.get_command("test").run(Context(self, message))
+    return cmds
 
 
 if __name__ == '__main__':
     bot = MeetBot()
 
+    bot.cmds.add_commands(load_commands())
 
-    async def test(ctx: Context):
-        await ctx.channel.send("coucou")
-
-
-    bot.cmds.add_command(test, 'test')
-    bot.run(config.TOKEN)
+    bot.run(TOKEN)
