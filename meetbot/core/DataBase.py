@@ -2,6 +2,7 @@ import mariadb
 import sys
 
 
+# https://mariadb.com/docs/appdev/connector-python/
 class DataBase:
     def __init__(self, user: str, password: str, host: str, port: int):
         self._conn = None
