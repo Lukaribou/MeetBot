@@ -2,6 +2,7 @@ import discord
 
 import meetbot.config as config
 from meetbot.core.Commands import *
+from meetbot.core.DataBase import DataBase
 
 
 class MeetBot(discord.Client):
@@ -12,6 +13,7 @@ class MeetBot(discord.Client):
         self.debug_mode = debug_mode
         self.cmds = CommandsManager(self)
         self._maintenance = maintenance_mode
+        self.db = DataBase(config.DB_USER, config.DB_PSWD, config.DB_HOST, config.DB_PORT)
 
         if run_now:
             self.run(config.TOKEN)
