@@ -10,6 +10,9 @@ class FileCommand(Command):
         super().__init__("ping", "Test API latency.")
 
     async def run(self, ctx: Context):
+        if not await super().run(ctx):
+            return
+
         em = discord.embeds.Embed(color=0x00FF00)
         t1 = time.time()
         m = await ctx.channel.send(embed=discord.embeds.Embed(color=0xFF0000))
