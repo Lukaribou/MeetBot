@@ -6,6 +6,7 @@ from typing import Dict, Union, List
 import discord
 
 from meetbot.config import OWNER_ID, EMOJIS
+from .DataBase import DataBase
 
 
 class Context:
@@ -15,13 +16,17 @@ class Context:
         self.msg_args = msg.content.split(" ")
         self.channel: discord.abc.Messageable = msg.channel
         self.author: Union[discord.Member, discord.User] = msg.author
+        self.db: DataBase = bot.db
 
 
 class Command:
-    def __init__(self, name: str, aliases: List[str] = None, owner_only=False, cooldown=1):
+    def __init__(self, name: str, description: str, use: str = None, aliases: List[str] = None, owner_only=False,
+                 cooldown=1):
         """Create a new command\n
         cooldown is in ms"""
         self.name = name
+        self.description = description
+        self.use = name if use is None else use
         self.aliases = [] if aliases is None else aliases
         self.owner_only = owner_only
         self.cooldown = cooldown
