@@ -7,7 +7,7 @@ from meetbot.core.Commands import Command, Context
 
 class FileCommand(Command):
     def __init__(self):
-        super().__init__("ping")
+        super().__init__("ping", "Test API latency.")
 
     async def run(self, ctx: Context):
         em = discord.embeds.Embed(color=0x00FF00)
