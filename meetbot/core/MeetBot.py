@@ -13,7 +13,7 @@ class MeetBot(discord.Client):
         self.debug_mode = debug_mode
         self.cmds = CommandsManager(self)
         self._maintenance = maintenance_mode
-        self.db = DataBase(config.DB_USER, config.DB_PSWD, config.DB_HOST, config.DB_PORT)
+        self.db = DataBase(config.DB_USER, config.DB_PSWD, config.DB_HOST, config.DB_PORT, "meetbot")
 
         if run_now:
             self.run(config.TOKEN)
@@ -42,7 +42,7 @@ class MeetBot(discord.Client):
 
         if self.cmds.is_in_cooldown(message.author, cmd.name):
             m = await message.channel.send(f'{EMOJIS["x"]} **This command has a cooldown of {cmd.cooldown}s !**')
-            await m.delete(5)
+            await m.delete(delay=5)
         else:
             self.cmds.add_in_cooldown(message.author, cmd)
             await cmd.run(Context(self, message))
