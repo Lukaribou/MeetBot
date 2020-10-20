@@ -13,7 +13,7 @@ class MeetBot(discord.Client):
         self.debug_mode = debug_mode
         self.cmds = CommandsManager(self)
         self._maintenance = maintenance_mode
-        self.db = DataBase(config.DB_USER, config.DB_PSWD, config.DB_HOST, config.DB_PORT, "meetbot")
+        self.db = DataBase(config.DB_HOST, config.DB_PORT, "meetbot")
 
         if run_now:
             self.run(config.TOKEN)
@@ -35,12 +35,13 @@ class MeetBot(discord.Client):
         print(f'Logged as {self.user}')
 
     async def on_message(self, message: discord.Message):
-        if (not message.content.startswith(self.prefix)) or message.author.bot or self._maintenance:
+        if not message.content.startswith(self.prefix) or message.author.bot or \
+                (self._maintenance and message.author.id != OWNER_ID):
             return
         message.content = message.content[len(self.prefix):]
         cmd = self.cmds.get_command(message.content.split(" ")[0])
 
-        if self.cmds.is_in_cooldown(message.author, cmd.name):
+        if self.cmds.is_in_cooldown(message.author, cmd.name) and message.author.id != OWNER_ID:
             m = await message.channel.send(f'{EMOJIS["x"]} **This command has a cooldown of {cmd.cooldown}s !**')
             await m.delete(delay=5)
         else:
