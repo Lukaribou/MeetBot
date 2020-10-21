@@ -15,8 +15,8 @@ class FileCommand(Command):
         if not await super().run(ctx):
             return
         if ctx.db.profile_exist(ctx.author.id):
-            return await ctx.channel.send(EMOJIS["x"] + "You are already registered ! Use `del` command to delete your "
-                                                        "actual account.")
+            return await ctx.channel.send(EMOJIS["x"] + "**You are already registered ! Use `del` command to delete "
+                                                        "your actual account.**")
         try:
             ctx.db.execute(
                 "INSERT INTO profiles (user_id, name, gender, description, age, flag, other)" +
