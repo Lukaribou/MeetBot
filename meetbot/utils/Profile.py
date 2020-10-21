@@ -3,6 +3,7 @@ from typing import List, Optional
 
 class Profile:
     def __init__(self, user_id: str, name: str, gender: str, description='', age=None, flag=None, other=None):
+        self.user_id = user_id
         self.name: str = name
         self.gender: str = gender
         self.description: str = description
