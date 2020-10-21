@@ -34,12 +34,12 @@ class Command:
     async def run(self, ctx: Context) -> bool:
         """Execute the command (override this method)\n
         Return true if the overrided method is ok to be executed."""
-        if ctx.bot.debug_mode:
-            print(f'Commande {self.name} exécutée !')
         if self.owner_only and ctx.author.id != OWNER_ID:
             m = await ctx.channel.send(EMOJIS["x"] + " **This command is reserved to the bot owner**")
             await m.delete(delay=5)
             return False
+        if ctx.bot.debug_mode:
+            print(f'Commande {self.name} exécutée !')
         return True
 
 

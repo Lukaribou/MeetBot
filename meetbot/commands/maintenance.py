@@ -1,4 +1,5 @@
 from meetbot.core.Commands import Command, Context
+from meetbot.config import EMOJIS
 
 
 class FileCommand(Command):
@@ -9,3 +10,5 @@ class FileCommand(Command):
     async def run(self, ctx: Context):
         if not await super().run(ctx):
             return
+        await ctx.bot.toggle_maintenance()
+        await ctx.channel.send(f"{EMOJIS['ok']} **Maintenance mode {'ON' if ctx.bot.maintenance else 'OFF'}.**")

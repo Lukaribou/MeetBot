@@ -12,19 +12,20 @@ class MeetBot(discord.Client):
         self.owner_id = config.OWNER_ID
         self.debug_mode = debug_mode
         self.cmds = CommandsManager(self)
-        self._maintenance = maintenance_mode
+        self.maintenance = maintenance_mode
         self.db = DataBase(config.DB_HOST, config.DB_PORT, "meetbot")
 
         if run_now:
             self.run(config.TOKEN)
 
-    def toggle_maintenance(self):
+    async def toggle_maintenance(self):
         """Toggle the maintenance mode"""
-        self._maintenance = not self._maintenance
-        print("TOGGLE MAINTENANCE MODE TO : " + str(self._maintenance))
+        self.maintenance = not self.maintenance
+        print("TOGGLE MAINTENANCE MODE TO : " + str(self.maintenance))
+        await self.on_ready()
 
     async def on_ready(self):
-        if self._maintenance:
+        if self.maintenance:
             await self.change_presence(
                 activity=discord.Activity(name='in maintenance', type=0),
                 status='idle'
@@ -32,11 +33,11 @@ class MeetBot(discord.Client):
         else:
             await self.change_presence(
                 activity=discord.Activity(name=f'for {EMOJIS["heart"]}', type=3))
-        print(f'Logged as {self.user}')
+            print(f'Logged as {self.user}')
 
     async def on_message(self, message: discord.Message):
         if not message.content.startswith(self.prefix) or message.author.bot or \
-                (self._maintenance and message.author.id != OWNER_ID):
+                (self.maintenance and message.author.id != OWNER_ID):
             return
         message.content = message.content[len(self.prefix):]
         cmd = self.cmds.get_command(message.content.split(" ")[0])
