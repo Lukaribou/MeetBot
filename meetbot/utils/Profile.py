@@ -4,9 +4,6 @@ from typing import List
 from meetbot.core.DataBase import DataBase
 
 
-UNEDITABLE = ['active', 'creation_date', 'user_id', 'last_meet']
-
-
 class Profile:
     def __init__(self, db: DataBase, user_id: str):
         self._db = db
@@ -23,5 +20,5 @@ class Profile:
         self.active: bool = bool(d["active"])
         self.last_meet: datetime = d["last_meet"]
 
-    def get_editable_columns_names(self) -> List[str]:
-        return [x for x in vars(self) if not x.startswith('_') and x not in UNEDITABLE]
+
+PROFILE_COLUMS = {'name': 40, 'gender': 15, 'description': 255, 'country': 50, 'other': 500, 'age': 3}
