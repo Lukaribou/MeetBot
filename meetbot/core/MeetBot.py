@@ -30,14 +30,15 @@ class MeetBot(discord.Client):
                 activity=discord.Activity(name='in maintenance', type=0),
                 status='idle'
             )
+            print(f'Logged as {self.user} in maintenance mode.')
         else:
             await self.change_presence(
                 activity=discord.Activity(name=f'for {EMOJIS["heart"]}', type=3))
             print(f'Logged as {self.user}')
 
     async def on_message(self, message: discord.Message):
-        if not message.content.startswith(self.prefix) or message.author.bot or \
-                (self.maintenance and message.author.id != OWNER_ID):
+        if not message.content.startswith(self.prefix) or message.content == config.PREFIX \
+                or message.author.bot or (self.maintenance and message.author.id != OWNER_ID):
             return
         message.content = message.content[len(self.prefix):]
         cmd = self.cmds.get_command(message.content.split(" ")[0])
