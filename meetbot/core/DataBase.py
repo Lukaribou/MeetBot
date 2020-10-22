@@ -21,7 +21,7 @@ class DataBase:
             print(f'Error connecting to DataBase: {e}')
             sys.exit(1)
 
-        self.cursor = self._conn.cursor(named_tuple=True)
+        self.cursor = self._conn.cursor(dictionary=True)
 
     def disconnect(self) -> None:
         print(f'Déconnection de la base de données...')
