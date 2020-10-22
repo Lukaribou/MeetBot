@@ -18,10 +18,7 @@ class FileCommand(Command):
             return await ctx.channel.send(EMOJIS["x"] + "**You are already registered ! Use `del` command to delete "
                                                         "your actual account.**")
         try:
-            ctx.db.execute(
-                "INSERT INTO profiles (user_id, name, gender, description, age, flag, other)" +
-                "VALUES (?, '', '', '', 0, '', '')",
-                ctx.author.id)
+            ctx.db.execute("INSERT INTO profiles (user_id) VALUES (?)", ctx.author.id)
             await ctx.channel.send(EMOJIS['ok'] + " **You are now registered ! You can use `set` to modify your "
                                                   "informations.**")
         except mariadb.Error as e:
