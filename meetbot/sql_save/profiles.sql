@@ -1,0 +1,15 @@
+CREATE TABLE `profiles` (
+	`user_id` VARCHAR(25) NOT NULL DEFAULT '0' COLLATE 'utf8_general_ci',
+	`name` VARCHAR(40) NOT NULL DEFAULT '' COLLATE 'utf8_general_ci',
+	`gender` VARCHAR(15) NOT NULL DEFAULT '' COLLATE 'utf8_general_ci',
+	`description` TINYTEXT NOT NULL DEFAULT '' COLLATE 'utf8_general_ci',
+	`age` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',
+	`country` VARCHAR(50) NOT NULL DEFAULT '' COLLATE 'utf8_general_ci',
+	`other` VARCHAR(500) NULL DEFAULT NULL COLLATE 'utf8_general_ci',
+	`active` TINYINT(1) UNSIGNED NOT NULL DEFAULT '1',
+	`creation_date` TIMESTAMP NOT NULL DEFAULT current_timestamp(),
+	INDEX `Index 1` (`user_id`)
+)
+COLLATE='utf8_general_ci'
+ENGINE=InnoDB
+;
