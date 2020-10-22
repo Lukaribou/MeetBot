@@ -45,6 +45,5 @@ class FileCommand(Command):
                                                             f'`{PROFILE_COLUMS[ctx.msg_args[1]]}` characters and you'
                                                             f'have written `{len(new_value)}`.'
                                                             f'You can try to `use English` to reduce the length.**')
-        print(new_value)
         ctx.db.execute(f"UPDATE profiles SET {ctx.msg_args[1]} = ? WHERE user_id = ?", new_value, ctx.author.id)
         await ctx.channel.send(f'{EMOJIS["ok"]} **`{ctx.msg_args[1]}` field has now the value `{new_value}`**')
