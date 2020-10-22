@@ -97,9 +97,9 @@ class CommandsManager:
             self._cooldown[author.id].append(cmd.name)
         else:
             self._cooldown[author.id] = [cmd.name]
-        threading.Timer(cmd.cooldown, self.delete_from_cooldown, [author, cmd.name]).start()
+        threading.Timer(cmd.cooldown, self.delete_of_cooldown, [author, cmd.name]).start()
 
-    def delete_from_cooldown(self, author: discord.User, cmd: str):
+    def delete_of_cooldown(self, author: discord.User, cmd: str):
         """Delete the command from the user's cooldown"""
         if author.id in self._cooldown.keys():
             if len(self._cooldown.get(author.id)) == 1:
