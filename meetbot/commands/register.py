@@ -21,6 +21,8 @@ class FileCommand(Command):
             ctx.db.execute("INSERT INTO profiles (user_id) VALUES (?)", ctx.author.id)
             await ctx.channel.send(EMOJIS['ok'] + " **You are now registered ! You can use `set` to modify your "
                                                   "informations.**")
+            if ctx.bot.debug_mode:
+                print(f'New registered : {ctx.author.name} (ID: {ctx.author.id})')
         except mariadb.Error as e:
             print("SQL Error occured on register.py : " + str(e))
             await ctx.channel.send(EMOJIS['x'] + " **An error occured. It will be repaired soon.**")
