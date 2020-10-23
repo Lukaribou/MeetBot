@@ -1,7 +1,7 @@
 import discord
 
 from meetbot.core.Commands import Command, Context
-from meetbot.config import EMOJIS, VERSION
+from meetbot.config import EMOJIS, VERSION, PREFIX
 
 
 class FileCommand(Command):
@@ -21,7 +21,7 @@ class FileCommand(Command):
                 em = discord.embeds.Embed(color=0x00FF00, title=f'Help for the {cmd.name} command')
                 em.set_thumbnail(url='https://static.thenounproject.com/png/67363-200.png')
                 em.add_field(name='Description:', value=cmd.description)
-                em.add_field(name='Use:', value=cmd.use)
+                em.add_field(name='Use:', value=PREFIX + cmd.use)
                 em.add_field(name='Aliases ?',
                              value=('`' + "`, `".join(cmd.aliases) + '`') if len(cmd.aliases) != 0 else EMOJIS['x'])
                 em.add_field(name='Owner only ?', value=EMOJIS['ok'] if cmd.owner_only else EMOJIS['x'])
