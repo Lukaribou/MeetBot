@@ -1,6 +1,7 @@
 from meetbot.core.Commands import Command, Context
 from meetbot.config import EMOJIS
 from meetbot.utils.Profile import Profile, PROFILE_COLUMS
+from meetbot.utils.functions import get_int
 
 
 class FileCommand(Command):
@@ -17,8 +18,6 @@ class FileCommand(Command):
             return await ctx.channel.send(EMOJIS['x'] + " **You currently don't have a profile. Use `reg` to create "
                                                         "it.**")
 
-        profile = Profile(ctx.db, ctx.author.id)
-
         if len(ctx.msg_args) == 2 and ctx.msg_args[1] == 'list':
             return await ctx.channel.send(
                 "Here are  all the editable fields: `" + '`, `'.join(PROFILE_COLUMS.keys()) + "`")
@@ -29,15 +28,19 @@ class FileCommand(Command):
             return await ctx.channel.send(EMOJIS['x'] + " **This field is undefined or not editable. Use `set list` to "
                                                         "display editable fields.**")
 
-        if ctx.msg_args[1] == 'age' and ctx.msg_args[2] != 'NULL':
+        if ctx.msg_args[1] in ['age', 'color'] and ctx.msg_args[2].upper() != 'NULL':
             try:
-                new_value = int(ctx.msg_args[2])
-                if new_value > 99:
-                    raise ValueError
+                new_value = get_int(ctx.msg_args[2])
+                if ctx.msg_args[1] == 'age' and (0 > new_value or new_value > 99):
+                    return await ctx.channel.send(EMOJIS['x'] + ' **Age field need to be `between 0 and 100`.**')
+                elif ctx.msg_args[1] == 'color' and (0 > new_value or new_value > 16777215):
+                    return await ctx.channel.send(EMOJIS['x'] +
+                                                  ' **Color field need to be `between 0 and 16777215 (0xFFFFFF)`.**')
             except ValueError:
-                return await ctx.channel.send(EMOJIS['x'] + ' You need to set your age with a number lower than 100.')
-        elif ctx.msg_args[2] == 'NULL':
-            new_value = 0 if ctx.msg_args[1] == 'age' else ''
+                return await ctx.channel.send(EMOJIS['x'] + ' **Age or color field are `number`.'
+                                                            'Color is in `hexadecimal`.**')
+        elif ctx.msg_args[2].upper() == 'NULL':
+            new_value = 0 if ctx.msg_args[1] in ['age', 'color'] else ''
         else:
             new_value = ' '.join(ctx.msg_args[2:])
             if len(new_value) > PROFILE_COLUMS[ctx.msg_args[1]]:

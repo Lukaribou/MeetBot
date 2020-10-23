@@ -19,6 +19,7 @@ class Profile:
         self.creation_date: datetime = d["creation_date"]
         self.active: bool = bool(d["active"])
         self.last_meet: datetime = d["last_meet"]
+        self.color = d["color"]
 
 
-PROFILE_COLUMS = {'name': 40, 'gender': 15, 'description': 255, 'country': 50, 'other': 500, 'age': 3}
+PROFILE_COLUMS = {'name': 40, 'gender': 15, 'description': 255, 'country': 50, 'other': 500, 'age': 3, 'color': 6}
