@@ -11,4 +11,9 @@ class FileCommand(Command):
         if not await super().run(ctx):
             return
         if not ctx.db.profile_exist(ctx.author.id):
-            await ctx.channel.send(EMOJIS['x'] + ' **You need a profile to use this command.**')
+            return await ctx.channel.send(EMOJIS['x'] + ' **You need a profile to use this command.**')
+
+        all_p = [Profile(x) for x in ctx.db.execute('SELECT * FROM profiles WHERE active = 1 AND NOT user_id = ?',
+                                                    ctx.author.id).fetchall()]
+
+        print(all_p)
