@@ -4,3 +4,6 @@ meetbot/config.py
 meetbot/__pycache__/
 meetbot/core/__pycache__/
 *.pyc
+*.lock
+*.toml
+recommend_algo/target/
