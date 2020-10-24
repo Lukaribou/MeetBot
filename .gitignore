@@ -4,3 +4,5 @@ meetbot/config.py
 meetbot/__pycache__/
 meetbot/core/__pycache__/
 *.pyc
+*.toml
+meet_algo/src/config.jl
