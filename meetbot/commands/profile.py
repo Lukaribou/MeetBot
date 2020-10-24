@@ -26,7 +26,7 @@ class FileCommand(Command):
                 pass
 
         if target is not None:
-            target = Profile(ctx.db, target.id) if ctx.db.profile_exist(target.id) else None
+            target = Profile.from_db(ctx.db, target.id) if ctx.db.profile_exist(target.id) else None
 
         if target is None or not target:
             return await ctx.channel.send(EMOJIS['x'] + ' **The provided id/user does not match any profile.**')
