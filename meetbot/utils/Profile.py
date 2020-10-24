@@ -5,7 +5,7 @@ from meetbot.core.DataBase import DataBase
 
 class Profile:
     def __init__(self, db: DataBase, user_id: int):
-        self._db = db
+        self._db: DataBase = db
         d = self._db.execute("SELECT * FROM profiles WHERE user_id = ?", str(user_id)).fetchall()[0]
 
         self.user_id = user_id
@@ -18,7 +18,7 @@ class Profile:
         self.creation_date: datetime = d["creation_date"]
         self.active: bool = bool(d["active"])
         self.last_meet: datetime = d["last_meet"]
-        self.color = d["color"]
+        self.color: int = d["color"]
 
 
 PROFILE_COLUMS = {'name': 40, 'gender': 15, 'description': 255, 'country': 50, 'other': 500, 'age': 3, 'color': 6}
