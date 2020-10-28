@@ -19,6 +19,9 @@ class Profile:
         self.last_meet: datetime = d["last_meet"]
         self.color: int = d["color"]
 
+    def __str__(self):
+        return f"(ID: {self.user_id}) {self.name}, {self.gender} de {self.age} ans venant de {self.country}."
+
     @staticmethod
     def from_db(db: DataBase, user_id: int):
         return Profile(db.execute("SELECT * FROM profiles WHERE user_id = ?", str(user_id)).fetchall()[0])

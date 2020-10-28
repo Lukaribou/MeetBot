@@ -13,7 +13,13 @@ class FileCommand(Command):
         if not ctx.db.profile_exist(ctx.author.id):
             return await ctx.channel.send(EMOJIS['x'] + ' **You need a profile to use this command.**')
 
+        user = Profile.from_db(ctx.db, ctx.author.id)
         all_p = [Profile(x) for x in ctx.db.execute('SELECT * FROM profiles WHERE active = 1 AND NOT user_id = ?',
                                                     ctx.author.id).fetchall()]
+        len_all_p = len(all_p)
 
-        print(all_p)
+        all_p = list(filter(lambda x: (user.age - 10 <= x.age <= user.age + 10), all_p))
+
+        print("%d restants sur %d résultats de base" % (len(all_p), len_all_p))
+        for p in all_p:
+            print(p)
