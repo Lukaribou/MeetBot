@@ -20,7 +20,7 @@ class Profile:
         self.color: int = d["color"]
 
     def __str__(self):
-        return f"(ID: {self.user_id}) {self.name}, {self.gender} de {self.age} ans venant de {self.country}."
+        return f"(ID: {self.user_id}) {self.name}, {self.gender} of {self.age} years old, from {self.country}."
 
     @staticmethod
     def from_db(db: DataBase, user_id: int):
