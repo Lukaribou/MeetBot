@@ -14,12 +14,25 @@ class FileCommand(Command):
             return await ctx.channel.send(EMOJIS['x'] + ' **You need a profile to use this command.**')
 
         user = Profile.from_db(ctx.db, ctx.author.id)
-        all_p = [Profile(x) for x in ctx.db.execute('SELECT * FROM profiles WHERE active = 1 AND NOT user_id = ?',
-                                                    ctx.author.id).fetchall()]
-        len_all_p = len(all_p)
+        C_ALL_P = [Profile(x) for x in ctx.db.execute('SELECT * FROM profiles WHERE active = 1 AND NOT user_id = ?',
+                                                      ctx.author.id).fetchall()]
 
-        all_p = list(filter(lambda x: (user.age - 10 <= x.age <= user.age + 10), all_p))
+        all_p = C_ALL_P.copy()
 
-        print("%d restants sur %d résultats de base" % (len(all_p), len_all_p))
+        for i in range(5, 40, 5):  # age +- [5, 10, 15, ...]
+            all_p = list(filter(lambda x: (user.age - i <= x.age <= user.age + i), C_ALL_P))
+            if len(all_p) > 0:
+                break
+
+        if len(all_p) == 0:
+            return await ctx.channel.send(EMOJIS['x'] + " **It seems that no profile matches yours. I'll send you "
+                                                        "the first profile I find...**",
+                                          embed=await C_ALL_P[0].to_embed(ctx.bot))
+
+        all_p = sorted(all_p, key=lambda x: x.last_meet, reverse=True)  # trier last_meet récent => ancien
+
+
+
+        print("%d restants sur %d résultats de base" % (len(all_p), len(C_ALL_P)))
         for p in all_p:
             print(p)
