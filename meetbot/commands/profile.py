@@ -15,13 +15,13 @@ class FileCommand(Command):
             return
 
         target = None
-        if len(ctx.msg_args) == 1 or ctx.msg_args[2] == 'me':
+        if len(ctx.msg_args) == 1 or ctx.msg_args[1] == 'me':
             target = ctx.author
         elif len(ctx.msg.mentions) != 0:
             target = ctx.msg.mentions[0]
         else:
             try:
-                target = ctx.bot.get_user(int(ctx.msg_args[1]))
+                target = await ctx.bot.fetch_user(int(ctx.msg_args[1]))
             except ValueError:
                 pass
 
@@ -33,24 +33,4 @@ class FileCommand(Command):
         if not target.active:
             return await ctx.channel.send(EMOJIS['x'] + ' **This profile is not active.**')
 
-        user: discord.User = ctx.bot.get_user(target.user_id)
-
-        def t(a):
-            if type(a) is str:
-                return a if a is not '' else 'Not provided'
-            else:
-                return a if a is not 0 else 'Not provided'
-
-        em = discord.embeds.Embed(color=target.color)
-        em.set_author(name='Informations about: ' + user.name, icon_url=user.avatar_url)
-        em.add_field(name='Name:', value=t(target.name))
-        em.add_field(name='Gender:', value=t(target.gender))
-        em.add_field(name='Age:', value=str(t(target.age)))
-        em.add_field(name='Description:', value=t(target.description))
-        em.add_field(name='Country:', value=t(target.country))
-        em.add_field(name='Profile creation date:', value=str(target.creation_date))
-        em.add_field(name='Last meet command:', value=str(target.creation_date))
-        em.add_field(name='Other:', value=t(target.other))
-        em.set_footer(text='User id: ' + str(target.user_id))
-
-        await ctx.channel.send(embed=em)
+        await ctx.channel.send(embed=await target.to_embed(ctx.bot))
